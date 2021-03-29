@@ -17,6 +17,7 @@ const client = new Discord.Client();
 //Set the prefix and token of the bot.
 const settings = {
   prefix: '!',
+  token: 'ODI1OTY5NzA3ODQwMTc2MTQ5.YGFqPA.1qWufTdaFuLRN-Wg3SAw3q6wfYw'
 }
 
 const talkedRecently = new Set();
