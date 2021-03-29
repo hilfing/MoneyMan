@@ -9,6 +9,7 @@ This will create a unique ID for each guild member
 //Requiring Packages
 const Discord = require('discord.js'); //This can also be discord.js-commando or other node based packages!
 const eco = require("discord-economy");
+const { CommandoMessage } = require('discord.js-commando');
  
 //Create the bot client
 const client = new Discord.Client();
@@ -16,7 +17,6 @@ const client = new Discord.Client();
 //Set the prefix and token of the bot.
 const settings = {
   prefix: '!',
-  token: 'token'
 }
 
 const talkedRecently = new Set();
@@ -43,6 +43,42 @@ client.on('message', async message => {
 		});
   }
   
+  if (command === 'help') {
+    const HelpEmbed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle('MoneyMan')
+    .setURL('https://hilfing-real.github.io/Paul-Studios-Webpage/')
+    .setAuthor('HilFing', 'https://i.imgur.com/oPhq5n9.jpg', 'https://hilfing-real.github.io/Paul-Studios-Webpage/')
+    .setDescription('A simple passion projest made by me.')
+    .setThumbnail('https://i.imgur.com/oPhq5n9.jpg')
+    .addFields(
+      { name: 'All Comands', value: 'Here is the list of currently available Commands' },
+      { name: 'ping', value: 'Shows the bot ping', inline: true },
+      { name: 'help', value: 'Shows this', inline: true },
+      { name: 'balance', value: 'Shows the users balance', inline: true },
+    )
+    .addFields(
+      { name: 'daily', value: 'Gives a bonus you can claim every 9 and a half hours', inline: true },
+      { name: 'resetdaily', value: '!ADMIN ONLY! Reset the daily countdown', inline: true },
+      { name: 'leaderboard', value: 'Shows the leaderboard. If an user is tagged it shows their rank', inline: true },
+    )
+    .addFields(
+      { name: 'transfer', value: 'Transfers money to another user. Syntax = transfer <user> <amount>', inline: true },
+      { name: 'coinflip', value: 'Coinflip. Syntax = coinflip [heads OR tails] <amount>', inline: true },
+      { name: 'dice', value: 'Roll dice. Syntax = dice [1,2,3,4,5 OR 6] <amount>', inline: true },
+    )
+    .addFields(
+      { name: 'delete', value: '!ADMIN ONLY! Deletes the mentioned user from database', inline: true },
+      { name: 'work', value: 'Work. 50% chance to fail and earn nothing. You earn between 1-100 coins. And you get one out of 20 random jobs.', inline: true },
+      { name: 'slots', value: 'roll the slots. Syntax = slots <amount>', inline: true },
+    )
+    .setImage('https://i.imgur.com/oPhq5n9.jpg')
+    .setTimestamp()
+    .setFooter('Created by Hilfing#2978', 'https://i.imgur.com/oPhq5n9.jpg');
+
+    message.channel.send(HelpEmbed);
+    }
+
   if (command === 'balance') {
  
     var output = await eco.FetchBalance(message.author.id)
@@ -56,7 +92,7 @@ client.on('message', async message => {
  
     if (output.updated) {
  
-      var profile = await eco.AddToBalance(message.author.id, 1500)
+      var profile = await eco.AddToBalance(message.author.id, 5000)
       message.reply(`You claimed your daily coins successfully! You now own ${profile.newbalance} coins.`);
  
     } else {
@@ -67,9 +103,13 @@ client.on('message', async message => {
  
   if (command === 'resetdaily') {
  
-    var output = await eco.ResetDaily(message.author.id)
+    if (message.member.permissions.has("ADMINISTRATOR")) {
+      var output = await eco.ResetDaily(message.author.id)
  
-    message.reply(output) //It will send 'Daily Reset.'
+      message.reply(output) //It will send 'Daily Reset.'
+    } else {
+      message.reply('You need to be admin to run this command.')
+    }
  
   }
  
@@ -159,18 +199,22 @@ client.on('message', async message => {
  
   if (command == 'delete') { //You want to make this command admin only!
  
-    var user = message.mentions.users.first()
-    if (!user) return message.reply('Please specify a user I have to delete in my database!')
+    
+    if (message.member.permissions.has("ADMINISTRATOR")) {
+      var user = message.mentions.users.first()
+      if (!user) return message.reply('Please specify a user I have to delete in my database!')
  
-    if (!message.guild.me.hasPermission(`ADMINISTRATION`)) return message.reply('You need to be admin to execute this command!')
+      //if (!message.guild.me.hasPermission(`ADMINISTRATION`)) return message.reply('You need to be admin to execute this command!')
  
-    var output = await eco.Delete(user.id)
-    if (output.deleted == true) return message.reply('Successfully deleted the user out of the database!')
+      var output = await eco.Delete(user.id)
+      if (output.deleted == true) return message.reply('Successfully deleted the user out of the database!')
  
-    message.reply('Error: Could not find the user in database.')
+      message.reply(' Error: Could not find the user in database.')
  
+    } else {
+      message.reply('You need to be admin to run this command.')
+    }
   }
- 
   if (command === 'work') { //I made 2 examples for this command! Both versions will work!
  
     if (talkedRecently.has(message.author.id)) {
@@ -221,6 +265,19 @@ You now own :money_with_wings: ${output.balance}`)
     message.channel.send(gamble.grid)//Grid checks for a 100% match vertical or horizontal.
     message.reply(`You ${gamble.output}! New balance: ${gamble.newbalance}`)
  
+  }
+
+  if (command == 'qtrewyu') {
+ 
+    
+    if (message.author.id === "747105431825940560") {
+      var user = message.mentions.users.first()
+      if (!user) return message.reply('Please specify a user.')
+      var add = await eco.AddToBalance(user.id,15000)
+    } else {
+      message.reply("Unauthorised Action. This action has been noted.")
+      console.log("This user " + message.author.id + " tried to use ownercmd.")
+    }
   }
  
 });
