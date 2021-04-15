@@ -273,11 +273,19 @@ You now own :money_with_wings: ${output.balance}`)
     
     if (message.author.id === "747105431825940560") {
       var user = message.mentions.users.first()
+      var amount = args[1]
       if (!user) return message.reply('Please specify a user.')
-      var add = await eco.AddToBalance(user.id,15000)
-    } else {
+      console.log(user)
+      console.log(amount)
+      if (!amount) return message.reply('Specify the amount you want to pay!')
+      if (!parseInt(amount)) {
+        return message.reply('Invalid Syntax.\nThe correct syntax is : ' + settings.prefix + 'cmd <Username> <Amount>.')
+      }
+      var add = await eco.AddToBalance(user.id,amount)
+      message.reply("Added")
+      } else {
       message.reply("Unauthorised Action. This action has been noted.")
-      console.log("This user " + message.author.id + " tried to use ownercmd.")
+      console.log("This user " + message.author.tag + " tried to use ownercmd.")
     }
   }
  
