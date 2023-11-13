@@ -14,7 +14,7 @@
     "discord.js": "^12.5.1",
     "discord.js-commando": "^0.12.3",
     "eris": "^0.14.0",
-    "sequelize": "^6.6.2",
+    "sequelize": "^6.29.0",
     "sqlite3": "^5.0.2"
   }
 }
